@@ -1,28 +1,37 @@
+/*global chrome*/
+
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Frame, { FrameContextConsumer } from 'react-frame-component';
+import './App.scss';
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+	componentDidMount() {
+		chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+			const currentURL = tabs[0].url;
+			if (currentURL == null) {
+				throw new Error('currentURL is not obtained thus null');
+			}
+			let url = new URL(currentURL);
+			const domain = url.hostname;
+			this.setState({
+				domain: domain,
+				url: currentURL
+			});
+			console.log(this.state.url);
+		});
+	}
+
+	render() {
+		return (
+			<Frame>
+				<FrameContextConsumer>
+					{({ document, window }) => {
+						return <div className="App" />;
+					}}
+				</FrameContextConsumer>
+			</Frame>
+		);
+	}
 }
 
 export default App;
