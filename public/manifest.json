@@ -1,31 +1,19 @@
 {
-  "short_name": "Notetaker",
-  "name": "Youtube Notes",
-  "version": "0.1",
-  "manifest_version": 2,
-  "content_scripts": [
-    {
-      "matches": [
-        "*://www.youtube.com/*"
-      ],
-      "js": [
-        "content.js"
-      ]
-    }
-  ],
-  "background": {
-    "scripts": [
-      "background.js"
-    ]
-  },
-  "permissions": [
-    "tabs",
-    "webNavigation",
-    "contextMenus",
-    "*://youtube.com/*"
-  ],
-  "web_accessible_resources": [
-    "*.html"
-  ],
-  "content_security_policy": "script-src 'self' 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; object-src 'self'"
+	"short_name": "Notetaker",
+	"name": "Youtube Notes",
+	"version": "0.1",
+	"manifest_version": 2,
+	"content_scripts": [
+		{
+			"matches": [ "*://www.youtube.com/*" ],
+			"sass": [ "/static/css/app.scss", "/static/css/content.scss" ],
+			"js": [ "/static/js/1.chunk.js" ]
+		}
+	],
+	"background": {
+		"scripts": [ "background.js" ]
+	},
+	"permissions": [ "tabs", "webNavigation", "contextMenus", "*://youtube.com/*" ],
+	"web_accessible_resources": [ "*.html" ],
+	"content_security_policy": "script-src 'self' 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; object-src 'self'"
 }

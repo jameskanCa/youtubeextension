@@ -22,16 +22,17 @@ class App extends Component {
 	}
 
 	render() {
-		return (
-			<Frame>
-				<FrameContextConsumer>
-					{({ document, window }) => {
-						return <div className="App" />;
-					}}
-				</FrameContextConsumer>
-			</Frame>
-		);
+		return <div className="App">heyyy</div>;
 	}
 }
 
 export default App;
+{
+	/* <Frame head={}>
+<FrameContextConsumer>
+  {({ document, window }) => {
+    return <div className="App" />;
+  }}
+</FrameContextConsumer>
+</Frame> */
+}
