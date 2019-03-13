@@ -6,14 +6,20 @@
 	"content_scripts": [
 		{
 			"matches": [ "*://www.youtube.com/*" ],
-			"sass": [ "/static/css/app.scss", "/static/css/content.scss" ],
-			"js": [ "/static/js/1.chunk.js" ]
+			"css": [ "/static/css/0.chunk.css", "/static/css/4.chunk.css", "/static/css/app.css" ],
+			"js": [ "/static/js/0.chunk.js", "/static/js/3.chunk.js", "/static/js/content.js" ]
 		}
 	],
 	"background": {
 		"scripts": [ "background.js" ]
 	},
 	"permissions": [ "tabs", "webNavigation", "contextMenus", "*://youtube.com/*" ],
-	"web_accessible_resources": [ "*.html" ],
+	"web_accessible_resources": [
+		"/static/css/0.chunk.css",
+		"/static/css/4.chunk.css",
+		"/static/css/app.css",
+		"/static/css/content.css",
+		"*.html"
+	],
 	"content_security_policy": "script-src 'self' 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; object-src 'self'"
 }

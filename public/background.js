@@ -1,9 +1,18 @@
-runBackgroundScript();
-
 function runBackgroundScript() {
 	chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
 		chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-			chrome.tabs.sendMessage(tabs[0].id, { type: 'updatedLink', currentURL: tab[0].url });
+			console.log('message sent');
+			chrome.tabs.sendMessage(details.tabId, {
+				type: 'updatedLink',
+				currentURL: details.url,
+				videoTitle: tabs[0].title
+			});
 		});
+
+		// document.addEventListener('DOMContentLoaded', () => {
+		// 	console.log('finished');
+		// 	this.setState({ pauseVideo: true });
+		// });
 	});
 }
+runBackgroundScript();
