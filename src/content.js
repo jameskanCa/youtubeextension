@@ -69,7 +69,7 @@ class Main extends React.Component {
 				head={[
 					<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL('/static/css/content.css')} />,
 					<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL('/static/css/0.chunk.css')} />,
-					<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL('/static/css/4.chunk.css')} />
+					<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL('/static/css/3.chunk.css')} />
 				]}
 			>
 				<FrameContextConsumer>

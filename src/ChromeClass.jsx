@@ -4,6 +4,7 @@ import React from 'react';
 import { Form, Input, Button } from 'antd';
 import moment from 'moment';
 import './content.scss';
+import { StoreReview } from './requests/StoreReview';
 
 export default class ChromeClass extends React.Component {
 	constructor(props) {
@@ -24,11 +25,14 @@ export default class ChromeClass extends React.Component {
 		let currentTime = moment().toISOString(true);
 
 		const Session = {
+			userId: 'jamesKan',
 			videoTitle: this.props.videoMetadata.videoTitle,
 			videoURL: this.props.videoMetadata.url,
 			purposeDescription: this.state.purpose,
 			startTime: currentTime
 		};
+
+		StoreReview.storeReview(Session);
 
 		//this.props.onClose();
 	};

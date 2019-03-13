@@ -24,7 +24,7 @@ class App extends React.Component {
 			const metaDataArray = await RequestYoutubeMetadata.requestVideoMetadata(this.state.url);
 			const metaData = metaDataArray.items[0];
 			const currentMetadata = new VideoMetadata(
-				metaData.snippet.url,
+				this.state.url,
 				metaData.snippet.title,
 				metaData.contentDetails.duration,
 				metaData.snippet.description,
