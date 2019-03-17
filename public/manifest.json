@@ -6,7 +6,7 @@
 	"content_scripts": [
 		{
 			"matches": [ "*://www.youtube.com/*" ],
-			"css": [ "/static/css/0.chunk.css", "/static/css/4.chunk.css", "/static/css/app.css" ],
+			"css": [ "/static/css/0.chunk.css", "/static/css/3.chunk.css", "/static/css/app.css" ],
 			"js": [ "/static/js/0.chunk.js", "/static/js/3.chunk.js", "/static/js/content.js" ]
 		}
 	],
@@ -16,7 +16,7 @@
 	"permissions": [ "tabs", "webNavigation", "contextMenus", "*://youtube.com/*" ],
 	"web_accessible_resources": [
 		"/static/css/0.chunk.css",
-		"/static/css/4.chunk.css",
+		"/static/css/3.chunk.css",
 		"/static/css/app.css",
 		"/static/css/content.css",
 		"*.html"

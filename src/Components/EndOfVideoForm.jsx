@@ -3,8 +3,7 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 import moment from 'moment';
-import './content.scss';
-import { StoreReview } from './requests/StoreReview';
+import '../content.scss';
 
 export default class ChromeClass extends React.Component {
 	constructor(props) {
@@ -13,12 +12,12 @@ export default class ChromeClass extends React.Component {
 
 	state = {
 		videoType: '',
-		purpose: '',
-		initialRating: ''
+		notes: '',
+		endRating: ''
 	};
 
 	onChange = (value) => {
-		this.setState({ purpose: value });
+		this.setState({ notes: value });
 	};
 
 	onSave = () => {
@@ -28,33 +27,24 @@ export default class ChromeClass extends React.Component {
 			userId: 'jamesKan',
 			videoTitle: this.props.videoMetadata.videoTitle,
 			videoURL: this.props.videoMetadata.url,
-			purposeDescription: this.state.purpose,
+			purposeDescription: this.state.notes,
 			startTime: currentTime
 		};
 
-		StoreReview.storeReview(Session);
-
+		//StoreReview.storeReview(Session);
 		//this.props.onClose();
 	};
 
 	render() {
-		//Move this to compoent did Update
-		if (this.props.readyToPause) {
-			this.props.pauseVideo();
-		}
-
 		return (
 			<div>
 				{this.props.videoMetadata.videoTitle}
-				<div>From link: {this.props.videoMetadata.url} </div>
-				<div>Description: {this.props.videoMetadata.videoDescription} </div>
 				<div>Duration: {this.props.videoMetadata.videoDuration} </div>
-				<div>Category: {this.props.videoMetadata.videoCategory} </div>
 				<Form>
-					<Form.Item label={'Purpose of Watching'}>
+					<Form.Item label={'What did you learn?'}>
 						<Input
-							placeholder="Purpose of watching this video."
-							value={this.state.purpose}
+							placeholder="Enter notes"
+							value={this.state.notes}
 							onChange={(event) => this.onChange(event.target.value)}
 						/>
 					</Form.Item>

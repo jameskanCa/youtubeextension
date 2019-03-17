@@ -5,7 +5,8 @@ import Frame, { FrameContextConsumer } from 'react-frame-component';
 import RequestYoutubeMetadata from './requests/RequestYoutubeMetadata';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ChromeClass from './ChromeClass';
+import StartOfVideoForm from './Components/StartOfVideoForm';
+import EndOfVideoForm from './Components/EndOfVideoForm';
 import { Modal } from 'antd';
 import VideoMetadata from './Models/VideoMetadata';
 import './content.scss';
@@ -15,7 +16,9 @@ class Main extends React.Component {
 		visibleModal: false,
 		pauseVideo: false,
 		url: '',
-		videoMetadata: {}
+		videoMetadata: {},
+		endOfVideo: false,
+		dataBaseRef: ''
 	};
 
 	obtainMetadata = (request) => {
@@ -30,18 +33,22 @@ class Main extends React.Component {
 					metaData.snippet.description,
 					metaData.snippet.categoryId
 				);
-				this.setState({ videoMetadata: currentMetadata, visible: true });
+				this.setState({ videoMetadata: currentMetadata, visibleModal: true });
 			});
 		}
 	};
 
 	componentDidMount() {
-		chrome.runtime.onMessage.addListener(this.obtainMetadata);
-		chrome.runtime.onMessage.addListener((request) => {
-			if (request.type === 'finishedLoading') {
-				this.setState({ pauseVideo: true });
-			}
+		document.querySelector('video').addEventListener('ended', () => {
+			this.setState({ endOfVideo: true });
 		});
+		chrome.runtime.onMessage.addListener(this.obtainMetadata);
+	}
+
+	componentWillUpdate(prevProp, prevState) {
+		if (prevState.url != this.state.url) {
+			setTimeout(this.pauseVideo, 2000);
+		}
 	}
 
 	componentWillUnmount() {
@@ -56,10 +63,22 @@ class Main extends React.Component {
 		this.setState({ visibleModal: true });
 	};
 
-	handleOk = (e) => {
+	saveDbEntryRef = (reference) => {
+		this.setState({ dataBaseRef: reference });
+		console.log(reference);
+	};
+
+	handleInitialOk = (e) => {
 		this.setState({
 			visibleModal: false,
 			readyToPause: false
+		});
+		document.getElementsByClassName('ytp-play-button ytp-button')[0].click();
+	};
+
+	handleEndOk = (e) => {
+		this.setState({
+			endOfVideo: false
 		});
 	};
 
@@ -80,15 +99,30 @@ class Main extends React.Component {
 									<Modal
 										title="Youtube Noter"
 										visible={this.state.visibleModal}
-										onOk={this.handleOk}
+										onOk={this.handleInitialOk}
 										okButtonProps={{ disabled: false }}
 										cancelButtonProps={{ disabled: true }}
 										maskClosable={false}
 									>
-										<ChromeClass
-											onClose={this.handleOk}
+										<StartOfVideoForm
+											getDatabaseRef={this.saveDbEntryRef}
 											pauseVideo={this.pauseVideo}
 											readyToPause={this.state.pauseVideo}
+											videoMetadata={this.state.videoMetadata}
+										/>
+									</Modal>
+								)}
+								{this.state.endOfVideo && (
+									<Modal
+										title="Youtube Noter"
+										visible={this.state.endOfVideo}
+										onOk={this.handleEndOk}
+										okButtonProps={{ disabled: false }}
+										cancelButtonProps={{ disabled: true }}
+										maskClosable={false}
+									>
+										<EndOfVideoForm
+											onClose={this.handleEndOk}
 											videoMetadata={this.state.videoMetadata}
 										/>
 									</Modal>
@@ -104,5 +138,24 @@ class Main extends React.Component {
 
 const app = document.createElement('div');
 app.id = 'my-extension-root';
-document.body.appendChild(app);
-ReactDOM.render(<Main />, app);
+function handleCanvas(button) {
+	console.log('dom loaded');
+	document.body.appendChild(app);
+	ReactDOM.render(<Main />, app);
+}
+
+var observer = new MutationObserver(function(mutations, me) {
+	// `mutations` is an array of mutations that occurred
+	// `me` is the MutationObserver instance
+	var button = document.getElementsByClassName('ytp-play-button ytp-button');
+	if (button) {
+		handleCanvas(button);
+		me.disconnect();
+		return;
+	}
+});
+
+observer.observe(document, {
+	childList: true,
+	subtree: true
+});
