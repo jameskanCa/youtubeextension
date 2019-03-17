@@ -27,7 +27,7 @@ class Main extends React.Component {
 				const metaDataArray = await RequestYoutubeMetadata.requestVideoMetadata(this.state.url);
 				const metaData = metaDataArray.items[0];
 				const currentMetadata = new VideoMetadata(
-					metaData.snippet.url,
+					this.state.url,
 					metaData.snippet.title,
 					metaData.contentDetails.duration,
 					metaData.snippet.description,
@@ -138,24 +138,6 @@ class Main extends React.Component {
 
 const app = document.createElement('div');
 app.id = 'my-extension-root';
-function handleCanvas(button) {
-	console.log('dom loaded');
-	document.body.appendChild(app);
-	ReactDOM.render(<Main />, app);
-}
-
-var observer = new MutationObserver(function(mutations, me) {
-	// `mutations` is an array of mutations that occurred
-	// `me` is the MutationObserver instance
-	var button = document.getElementsByClassName('ytp-play-button ytp-button');
-	if (button) {
-		handleCanvas(button);
-		me.disconnect();
-		return;
-	}
-});
-
-observer.observe(document, {
-	childList: true,
-	subtree: true
-});
+console.log('dom loaded');
+document.body.appendChild(app);
+ReactDOM.render(<Main />, app);

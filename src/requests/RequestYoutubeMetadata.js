@@ -1,8 +1,6 @@
 export default class RequestYoutubeMetadata {
 	static extractVideoId(url) {
-		console.log(url);
 		let video_id = url.split('v=')[1];
-		console.log(video_id);
 		if (video_id.indexOf('&') !== null && video_id.indexOf('&') != -1) {
 			return video_id.substring(0, video_id.indexOf('&'));
 		}

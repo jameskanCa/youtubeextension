@@ -7,15 +7,17 @@ export class StoreReview {
 		databaseURL: 'https://extensionproject.firebaseio.com/',
 		storageBucket: 'youtubeextensionproject.appspot.com'
 	};
+	static app = firebase.initializeApp(this.config);
+	static database = this.app.database();
+
 	static storeInitialReview(Session) {
-		const app = firebase.initializeApp(this.config);
-		const databaseRef = app.database().ref(Session.userId);
-		return databaseRef.push();
+		console.log(Session);
+		const dbRef = this.database.ref(Session.userId);
+		return dbRef.push(Session);
 	}
 
 	static storeEndReview(Session) {
-		const app = firebase.initializeApp(this.config);
-		const databaseRef = app.database().ref(Session.userId);
-		return databaseRef.push(Session);
+		const dbRef = this.database.ref(Session.userId);
+		return dbRef.push(Session);
 	}
 }
