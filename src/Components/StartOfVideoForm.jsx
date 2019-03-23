@@ -5,6 +5,7 @@ import { Form, Input, Button } from 'antd';
 import { StoreReview } from '../requests/StoreReview';
 import moment from 'moment';
 import '../content.scss';
+import { YoutubeCategoryMapping } from '../Utils/YoutubeCategoryMapping';
 
 export default class ChromeClass extends React.Component {
 	constructor(props) {
@@ -32,9 +33,9 @@ export default class ChromeClass extends React.Component {
 			startTime: currentTime
 		};
 
-		const databaseEntryRef = StoreReview.storeInitialReview(Session);
-		this.props.getDatabaseRef(databaseEntryRef);
-		//this.props.onClose();
+		const databaseEntryKey = StoreReview.storeInitialReview(Session).key;
+		this.props.getDatabaseRef(databaseEntryKey);
+		this.props.onClose();
 	};
 
 	render() {
@@ -44,7 +45,11 @@ export default class ChromeClass extends React.Component {
 				<div>From link: {this.props.videoMetadata.url} </div>
 				<div>Description: {this.props.videoMetadata.videoDescription} </div>
 				<div>Duration: {this.props.videoMetadata.videoDuration} </div>
-				<div>Category: {this.props.videoMetadata.videoCategory} </div>
+				<div>
+					{`Category: ${YoutubeCategoryMapping.getYoutubeCategoryText(
+						Number(this.props.videoMetadata.videoCategory)
+					)}`}
+				</div>
 				<Form>
 					<Form.Item label={'Purpose of Watching'}>
 						<Input

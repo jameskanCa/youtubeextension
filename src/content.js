@@ -39,6 +39,15 @@ class Main extends React.Component {
 	};
 
 	componentDidMount() {
+		// document.querySelector('video').addEventListener('started', () => {
+		// 	alert('videostarted');
+		// });
+		// document.querySelector('video').addEventListener('pause', () => {
+		// 	alert('videostopped');
+		// });
+		// document.querySelector('video').addEventListener('play', () => {
+		// 	alert('videoresumed');
+		// });
 		document.querySelector('video').addEventListener('ended', () => {
 			this.setState({ endOfVideo: true });
 		});
@@ -46,7 +55,7 @@ class Main extends React.Component {
 	}
 
 	componentWillUpdate(prevProp, prevState) {
-		if (prevState.url != this.state.url) {
+		if (prevState.url !== this.state.url) {
 			setTimeout(this.pauseVideo, 2000);
 		}
 	}
@@ -65,7 +74,6 @@ class Main extends React.Component {
 
 	saveDbEntryRef = (reference) => {
 		this.setState({ dataBaseRef: reference });
-		console.log(reference);
 	};
 
 	handleInitialOk = (e) => {
@@ -78,6 +86,7 @@ class Main extends React.Component {
 
 	handleEndOk = (e) => {
 		this.setState({
+			visibleModal: false,
 			endOfVideo: false
 		});
 	};
@@ -100,15 +109,16 @@ class Main extends React.Component {
 										title="Youtube Noter"
 										visible={this.state.visibleModal}
 										onOk={this.handleInitialOk}
-										okButtonProps={{ disabled: false }}
-										cancelButtonProps={{ disabled: true }}
+										footer={null}
 										maskClosable={false}
+										closable={false}
 									>
 										<StartOfVideoForm
 											getDatabaseRef={this.saveDbEntryRef}
 											pauseVideo={this.pauseVideo}
 											readyToPause={this.state.pauseVideo}
 											videoMetadata={this.state.videoMetadata}
+											onClose={this.handleInitialOk}
 										/>
 									</Modal>
 								)}
@@ -120,8 +130,10 @@ class Main extends React.Component {
 										okButtonProps={{ disabled: false }}
 										cancelButtonProps={{ disabled: true }}
 										maskClosable={false}
+										closable={false}
 									>
 										<EndOfVideoForm
+											databaseKey={this.state.dataBaseRef}
 											onClose={this.handleEndOk}
 											videoMetadata={this.state.videoMetadata}
 										/>

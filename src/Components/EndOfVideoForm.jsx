@@ -2,6 +2,7 @@
 /* src/content.js */
 import React from 'react';
 import { Form, Input, Button } from 'antd';
+import { StoreReview } from '../requests/StoreReview';
 import moment from 'moment';
 import '../content.scss';
 
@@ -21,25 +22,23 @@ export default class ChromeClass extends React.Component {
 	};
 
 	onSave = () => {
-		let currentTime = moment().toISOString(true);
+		let endTime = moment().toISOString(true);
 
-		const Session = {
+		const endSession = {
 			userId: 'jamesKan',
-			videoTitle: this.props.videoMetadata.videoTitle,
-			videoURL: this.props.videoMetadata.url,
-			purposeDescription: this.state.notes,
-			startTime: currentTime
+			endTime: endTime,
+			notes: this.state.notes
 		};
 
-		//StoreReview.storeReview(Session);
-		//this.props.onClose();
+		StoreReview.storeEndReview(endSession, this.props.databaseKey);
+		this.props.onClose();
 	};
 
 	render() {
 		return (
 			<div>
 				{this.props.videoMetadata.videoTitle}
-				<div>Duration: {this.props.videoMetadata.videoDuration} </div>
+				<div>Duration: {this.props.videoMetadata.videoDuration}</div>
 				<Form>
 					<Form.Item label={'What did you learn?'}>
 						<Input

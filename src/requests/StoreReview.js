@@ -10,14 +10,14 @@ export class StoreReview {
 	static app = firebase.initializeApp(this.config);
 	static database = this.app.database();
 
-	static storeInitialReview(Session) {
-		console.log(Session);
-		const dbRef = this.database.ref(Session.userId);
-		return dbRef.push(Session);
+	static storeInitialReview(session) {
+		const dbRef = this.database.ref(session.userId);
+		return dbRef.push(session);
 	}
 
-	static storeEndReview(Session) {
-		const dbRef = this.database.ref(Session.userId);
-		return dbRef.push(Session);
+	static storeEndReview(endSession, databaseKey) {
+		this.database
+			.ref(`${endSession.userId}/${databaseKey}`)
+			.update({ endTime: endSession.endTime, notes: endSession.notes });
 	}
 }

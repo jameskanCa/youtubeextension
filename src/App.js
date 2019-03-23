@@ -91,15 +91,16 @@ export default class Main extends React.Component {
 										title="Youtube Noter"
 										visible={this.state.visibleModal}
 										onOk={this.handleInitialOk}
-										okButtonProps={{ disabled: false }}
-										cancelButtonProps={{ disabled: true }}
+										footer={null}
 										maskClosable={false}
+										closable={false}
 									>
 										<StartOfVideoForm
 											getDatabaseRef={this.saveDbEntryRef}
 											pauseVideo={this.pauseVideo}
 											readyToPause={this.state.pauseVideo}
 											videoMetadata={this.state.videoMetadata}
+											onClose={this.handleInitialOk}
 										/>
 									</Modal>
 								)}
@@ -111,8 +112,10 @@ export default class Main extends React.Component {
 										okButtonProps={{ disabled: false }}
 										cancelButtonProps={{ disabled: true }}
 										maskClosable={false}
+										closable={false}
 									>
 										<EndOfVideoForm
+											databaseKey={this.state.dataBaseRef}
 											onClose={this.handleEndOk}
 											videoMetadata={this.state.videoMetadata}
 										/>
