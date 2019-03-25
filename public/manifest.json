@@ -13,7 +13,7 @@
 	"background": {
 		"scripts": [ "background.js" ]
 	},
-	"permissions": [ "tabs", "webNavigation", "contextMenus", "*://youtube.com/*" ],
+	"permissions": [ "tabs", "webNavigation", "contextMenus", "*://youtube.com/*", "identity", "identity.email" ],
 	"web_accessible_resources": [
 		"/static/css/0.chunk.css",
 		"/static/css/3.chunk.css",

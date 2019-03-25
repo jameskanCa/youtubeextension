@@ -13,6 +13,7 @@ import './content.scss';
 
 class Main extends React.Component {
 	state = {
+		userId: '',
 		visibleModal: false,
 		pauseVideo: false,
 		url: '',
@@ -38,6 +39,16 @@ class Main extends React.Component {
 		}
 	};
 
+	obtainUserProfile = (request) => {
+		if (request.type === 'userProfile') {
+			this.setState({ userId: request.userId }, async () => {
+				if (this.state.userId === null || this.state.userId === '') {
+					throw new Error('cannot handle empty userId');
+				}
+			});
+		}
+	};
+
 	componentDidMount() {
 		// document.querySelector('video').addEventListener('started', () => {
 		// 	alert('videostarted');
@@ -52,6 +63,7 @@ class Main extends React.Component {
 			this.setState({ endOfVideo: true });
 		});
 		chrome.runtime.onMessage.addListener(this.obtainMetadata);
+		chrome.runtime.onMessage.addListener(this.obtainUserProfile);
 	}
 
 	componentWillUpdate(prevProp, prevState) {
@@ -62,6 +74,7 @@ class Main extends React.Component {
 
 	componentWillUnmount() {
 		chrome.runtime.onMessage.removeListener(this.obtainMetadata);
+		chrome.runtime.onMessage.removeListener(this.obtainUserProfile);
 	}
 
 	pauseVideo = () => {
@@ -117,6 +130,7 @@ class Main extends React.Component {
 											getDatabaseRef={this.saveDbEntryRef}
 											pauseVideo={this.pauseVideo}
 											readyToPause={this.state.pauseVideo}
+											userId={this.state.userId}
 											videoMetadata={this.state.videoMetadata}
 											onClose={this.handleInitialOk}
 										/>
@@ -127,14 +141,14 @@ class Main extends React.Component {
 										title="Youtube Noter"
 										visible={this.state.endOfVideo}
 										onOk={this.handleEndOk}
-										okButtonProps={{ disabled: false }}
-										cancelButtonProps={{ disabled: true }}
+										footer={null}
 										maskClosable={false}
 										closable={false}
 									>
 										<EndOfVideoForm
 											databaseKey={this.state.dataBaseRef}
 											onClose={this.handleEndOk}
+											userId={this.state.userId}
 											videoMetadata={this.state.videoMetadata}
 										/>
 									</Modal>

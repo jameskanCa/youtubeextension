@@ -3,8 +3,8 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 import { StoreReview } from '../requests/StoreReview';
-import moment from 'moment';
 import '../content.scss';
+import EndSession from '../ObjectLibrary/EndSession';
 
 export default class ChromeClass extends React.Component {
 	constructor(props) {
@@ -22,14 +22,7 @@ export default class ChromeClass extends React.Component {
 	};
 
 	onSave = () => {
-		let endTime = moment().toISOString(true);
-
-		const endSession = {
-			userId: 'jamesKan',
-			endTime: endTime,
-			notes: this.state.notes
-		};
-
+		const endSession = new EndSession(this.props.userId, true, this.state.notes);
 		StoreReview.storeEndReview(endSession, this.props.databaseKey);
 		this.props.onClose();
 	};
@@ -38,7 +31,6 @@ export default class ChromeClass extends React.Component {
 		return (
 			<div>
 				{this.props.videoMetadata.videoTitle}
-				<div>Duration: {this.props.videoMetadata.videoDuration}</div>
 				<Form>
 					<Form.Item label={'What did you learn?'}>
 						<Input

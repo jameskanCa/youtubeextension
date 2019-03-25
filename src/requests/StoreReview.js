@@ -12,12 +12,17 @@ export class StoreReview {
 
 	static storeInitialReview(session) {
 		const dbRef = this.database.ref(session.userId);
-		return dbRef.push(session);
+		return dbRef.push({
+			videoURL: session.videoURL,
+			purposeDescription: session.purposeDescription,
+			startTime: session.startTime,
+			finishedVideo: false
+		});
 	}
 
 	static storeEndReview(endSession, databaseKey) {
 		this.database
 			.ref(`${endSession.userId}/${databaseKey}`)
-			.update({ endTime: endSession.endTime, notes: endSession.notes });
+			.update({ endTime: endSession.endTime, notes: endSession.notes, finishedVideo: endSession.finishedVideo });
 	}
 }
