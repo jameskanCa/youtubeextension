@@ -1,0 +1,1 @@
+{"version":3,"sources":["C:/Users/user/Desktop/youtubeextension/src/C:/Users/user/Desktop/youtubeextension/src/C:/Users/user/Desktop/youtubeextension/src/content.scss"],"names":[],"mappings":"AAEA,OACC,qBAAuB","file":"content.css","sourcesContent":["/* src/content.scss */\r\n@import '~antd/dist/antd.css';\r\nheader {\r\n\tbackground-color: white;\r\n}\r\n"]}
