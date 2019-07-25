@@ -2,9 +2,9 @@
 /* src/content.js */
 import React from 'react';
 import { Form, Input, Button } from 'antd';
-import { StoreReview } from '../requests/StoreReview';
-import '../content.scss';
-import EndSession from '../ObjectLibrary/EndSession';
+import { StoreReview } from '../../requests/StoreReview';
+import '../../content.scss';
+import EndSession from '../../ObjectLibrary/EndSession';
 
 export default class ChromeClass extends React.Component {
 	constructor(props) {

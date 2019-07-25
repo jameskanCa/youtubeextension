@@ -1,12 +1,12 @@
 /*global chrome*/
 /* src/content.js */
 import React from 'react';
-import { Form, Input, Button, Collapse, Alert, Divider } from 'antd';
-import { StoreReview } from '../requests/StoreReview';
-import '../content.scss';
-import { YoutubeCategoryMapping } from '../Utils/YoutubeCategoryMapping';
-import InitialSession from '../ObjectLibrary/InitialSession';
-import TimeCalculations from '../Utils/TimeCalculations';
+import { Form, Input, Button, Collapse, Alert, Divider, notification, Icon } from 'antd';
+import { StoreReview } from '../../requests/StoreReview';
+import '../../content.scss';
+import { YoutubeCategoryMapping } from '../../Utils/YoutubeCategoryMapping';
+import InitialSession from '../../ObjectLibrary/InitialSession';
+import TimeCalculations from '../../Utils/TimeCalculations';
 
 const Panel = Collapse.Panel;
 
@@ -38,9 +38,15 @@ export default class ChromeClass extends React.Component {
 			false
 		);
 
-		const databaseEntryKey = StoreReview.storeInitialReview(Session).key;
-		this.props.getDatabaseRef(databaseEntryKey);
+		StoreReview.storeInitialReview(Session);
+		//this.props.getDatabaseRef(databaseEntryKey);
 		this.props.onClose();
+		notification.open({
+			message: 'Saved Succesfully',
+			description: 'Remember to use your time wisely!',
+			icon: <Icon type="smile" style={{ color: '#108ee9' }} />,
+			style: { zIndex: 2147483647, marginTop: 100 }
+		});
 	};
 
 	warnProcastination() {
@@ -61,22 +67,17 @@ export default class ChromeClass extends React.Component {
 	}
 
 	render() {
-		const { getFieldDecorator } = this.props.form;
 		return (
 			<div>
 				{this.warnProcastination()}
 				{this.props.videoMetadata.videoTitle}
 				<Form>
 					<Form.Item label={'Purpose of Watching'}>
-						{getFieldDecorator('nickname', {
-							rules: [ { required: true, message: 'Please input your purpose', whitespace: true } ]
-						})(
-							<Input
-								placeholder="Purpose of watching this video."
-								value={this.state.purpose}
-								onChange={(event) => this.onChange(event.target.value)}
-							/>
-						)}
+						<Input
+							placeholder="Purpose of watching this video."
+							value={this.state.purpose}
+							onChange={(event) => this.onChange(event.target.value)}
+						/>
 					</Form.Item>
 				</Form>
 				<Button onClick={this.onSave}>Log Session</Button>

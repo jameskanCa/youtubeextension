@@ -1,131 +1,55 @@
 /*global chrome*/
-/* src/content.js */
-
-import Frame, { FrameContextConsumer } from 'react-frame-component';
-import RequestYoutubeMetadata from './requests/RequestYoutubeMetadata';
+import { Layout } from 'antd';
 import React from 'react';
-import StartOfVideoForm from './Components/StartOfVideoForm';
-import EndOfVideoForm from './Components/EndOfVideoForm';
-import { Modal } from 'antd';
-import VideoMetadata from './Models/VideoMetadata';
-import './content.scss';
+import './App.scss';
+import CustomFooter from './NewTabComponents/UIComponents/CustomFooter';
+import Sidebar from './NewTabComponents/UIComponents/Sidebar';
+import CustomContent from './NewTabComponents/UIComponents/CustomContent';
+import DashboardUserProfile from './NewTabComponents/ObjectLibrary/DashboardUserProfile';
+import CustomHeader from './NewTabComponents/UIComponents/CustomHeader';
 
 export default class Main extends React.Component {
-	state = {
-		visibleModal: true,
-		pauseVideo: false,
-		url: '',
-		videoMetadata: new VideoMetadata('https://www.youtube.com/watch?v=grse', 'fea', 0, 'fe', 'fea'),
-		endOfVideo: false,
-		dataBaseRef: ''
-	};
+	// state = {
+	// 	userProfile: null
+	// };
 
-	obtainMetadata = (request) => {
-		this.setState({ url: 'https://www.youtube.com/watch?v=6Nyd1c3KNec' }, async () => {
-			const metaDataArray = await RequestYoutubeMetadata.requestVideoMetadata(this.state.url);
-			const metaData = metaDataArray.items[0];
-			const currentMetadata = new VideoMetadata(
-				metaData.snippet.url,
-				metaData.snippet.title,
-				metaData.contentDetails.duration,
-				metaData.snippet.description,
-				metaData.snippet.categoryId
-			);
-			this.setState({ videoMetadata: currentMetadata, visibleModal: true });
-		});
-	};
+	// // obtainUserProfile = (request) => {
+	// // 	if (request.type === 'userProfile') {
+	// // 		this.setState({ userProfile: new DashboardUserProfile(request.userId, request.userEmail) }, () => {
+	// // 			if (this.state.userId === null || this.state.userId === '') {
+	// // 				throw new Error('cannot handle empty userId');
+	// // 			}
+	// // 		});
+	// // 	}
+	// // };
+	// componentDidMount() {
+	// 	//chrome.runtime.onMessage.addListener(this.obtainUserProfile);
+	// }
 
-	componentDidMount() {
-		// document.querySelector('video').addEventListener('ended', () => {
-		// 	this.setState({ endOfVideo: true });
-		// });
-		//chrome.runtime.onMessage.addListener(this.obtainMetadata);
-	}
+	// componentWillUnmount() {
+	// 	//chrome.runtime.onMessage.removeListener(this.obtainUserProfile);
+	// }
 
-	componentWillUpdate(prevProp, prevState) {
-		if (prevState.url != this.state.url) {
-			setTimeout(this.pauseVideo, 2000);
-		}
-	}
-
-	componentWillUnmount() {
-		//	chrome.runtime.onMessage.removeListener(this.obtainMetadata);
-	}
-
-	pauseVideo = () => {
-		//document.getElementsByClassName('ytp-play-button ytp-button')[0].click();
-	};
-
-	setVisible = () => {
-		this.setState({ visibleModal: true });
-	};
-
-	saveDbEntryRef = (reference) => {
-		this.setState({ dataBaseRef: reference });
-		console.log(reference);
-	};
-
-	handleInitialOk = (e) => {
-		this.setState({
-			visibleModal: false,
-			readyToPause: false
-		});
-		//document.getElementsByClassName('ytp-play-button ytp-button')[0].click();
-	};
-
-	handleEndOk = (e) => {
-		this.setState({
-			endOfVideo: false
-		});
-	};
+	// retrieveUserData() {
+	// 	if (this.state.userId == null) {
+	// 		return null;
+	// 	}
+	// 	//return StoreReview.retrieveUserData(this.state.userId);
+	// 	return 'temp';
+	// }
 
 	render() {
+		const userData = this.retrieveUserData();
 		return (
-			<Frame>
-				<FrameContextConsumer>
-					{({ document, window }) => {
-						return (
-							<div>
-								{this.state.visibleModal && (
-									<Modal
-										title="Youtube Noter"
-										visible={this.state.visibleModal}
-										onOk={this.handleInitialOk}
-										footer={null}
-										maskClosable={false}
-										closable={false}
-									>
-										<StartOfVideoForm
-											getDatabaseRef={this.saveDbEntryRef}
-											pauseVideo={this.pauseVideo}
-											readyToPause={this.state.pauseVideo}
-											videoMetadata={this.state.videoMetadata}
-											onClose={this.handleInitialOk}
-										/>
-									</Modal>
-								)}
-								{this.state.endOfVideo && (
-									<Modal
-										title="Youtube Noter"
-										visible={this.state.endOfVideo}
-										onOk={this.handleEndOk}
-										okButtonProps={{ disabled: false }}
-										cancelButtonProps={{ disabled: true }}
-										maskClosable={false}
-										closable={false}
-									>
-										<EndOfVideoForm
-											databaseKey={this.state.dataBaseRef}
-											onClose={this.handleEndOk}
-											videoMetadata={this.state.videoMetadata}
-										/>
-									</Modal>
-								)}
-							</div>
-						);
-					}}
-				</FrameContextConsumer>
-			</Frame>
+			<div />
+			// <Layout style={{ minHeight: '100vh' }}>
+			// 	<Sidebar />
+			// 	<Layout>
+			// 		<CustomHeader userProfile={this.state.userProfile} />
+			// 		<CustomContent userData={userData} />
+			// 		<CustomFooter />
+			// 	</Layout>
+			// </Layout>
 		);
 	}
 }

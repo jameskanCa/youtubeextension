@@ -2,13 +2,12 @@
 /* src/content.js */
 
 import Frame, { FrameContextConsumer } from 'react-frame-component';
-import RequestYoutubeMetadata from './requests/RequestYoutubeMetadata';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import StartOfVideoForm from './Components/StartOfVideoForm';
-import EndOfVideoForm from './Components/EndOfVideoForm';
+import StartOfVideoForm from './ModalExtension/Components/StartOfVideoForm';
+import EndOfVideoForm from './ModalExtension/Components/EndOfVideoForm';
 import { Modal } from 'antd';
-import VideoMetadata from './Models/VideoMetadata';
+import VideoMetadata from './ModalExtension/Models/VideoMetadata';
 import './content.scss';
 
 class Main extends React.Component {
@@ -24,15 +23,14 @@ class Main extends React.Component {
 
 	obtainMetadata = (request) => {
 		if (request.type === 'updatedLink') {
-			this.setState({ url: request.currentURL }, async () => {
-				const metaDataArray = await RequestYoutubeMetadata.requestVideoMetadata(this.state.url);
-				const metaData = metaDataArray.items[0];
+			this.setState({ videoMetadata: request.metadata }, async () => {
+				console.log(request);
 				const currentMetadata = new VideoMetadata(
-					this.state.url,
-					metaData.snippet.title,
-					metaData.contentDetails.duration,
-					metaData.snippet.description,
-					metaData.snippet.categoryId
+					this.state.videoMetadata.snippet.localized.title,
+					this.state.videoMetadata.snippet.title,
+					this.state.videoMetadata.contentDetails.duration,
+					this.state.videoMetadata.snippet.description,
+					this.state.videoMetadata.snippet.categoryId
 				);
 				this.setState({ videoMetadata: currentMetadata, visibleModal: true });
 			});
@@ -50,20 +48,9 @@ class Main extends React.Component {
 	};
 
 	componentDidMount() {
-		// document.querySelector('video').addEventListener('started', () => {
-		// 	alert('videostarted');
-		// });
-		// document.querySelector('video').addEventListener('pause', () => {
-		// 	alert('videostopped');
-		// });
-		// document.querySelector('video').addEventListener('play', () => {
-		// 	alert('videoresumed');
-		// });
-		document.querySelector('video').addEventListener('ended', () => {
-			this.setState({ endOfVideo: true });
-		});
 		chrome.runtime.onMessage.addListener(this.obtainMetadata);
 		chrome.runtime.onMessage.addListener(this.obtainUserProfile);
+		chrome.runtime.onMessage.addListener(this.modalCheck);
 	}
 
 	componentWillUpdate(prevProp, prevState) {
@@ -75,7 +62,16 @@ class Main extends React.Component {
 	componentWillUnmount() {
 		chrome.runtime.onMessage.removeListener(this.obtainMetadata);
 		chrome.runtime.onMessage.removeListener(this.obtainUserProfile);
+		chrome.runtime.onMessage.removeListener(this.modalCheck);
 	}
+
+	modalCheck = (request) => {
+		if (request.type === 'noModal') {
+			if (this.state.visibleModal === true) {
+				this.setState({ visibleModal: false });
+			}
+		}
+	};
 
 	pauseVideo = () => {
 		document.getElementsByClassName('ytp-play-button ytp-button')[0].click();
@@ -95,6 +91,9 @@ class Main extends React.Component {
 			readyToPause: false
 		});
 		document.getElementsByClassName('ytp-play-button ytp-button')[0].click();
+		document.querySelector('video').addEventListener('ended', () => {
+			this.setState({ endOfVideo: true });
+		});
 	};
 
 	handleEndOk = (e) => {
@@ -110,7 +109,7 @@ class Main extends React.Component {
 				head={[
 					<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL('/static/css/content.css')} />,
 					<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL('/static/css/0.chunk.css')} />,
-					<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL('/static/css/3.chunk.css')} />
+					<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL('/static/css/4.chunk.css')} />
 				]}
 			>
 				<FrameContextConsumer>
@@ -164,6 +163,5 @@ class Main extends React.Component {
 
 const app = document.createElement('div');
 app.id = 'my-extension-root';
-console.log('dom loaded');
 document.body.appendChild(app);
 ReactDOM.render(<Main />, app);
