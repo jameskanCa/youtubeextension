@@ -26,7 +26,7 @@ class Main extends React.Component {
 			this.setState({ videoMetadata: request.metadata }, async () => {
 				console.log(request);
 				const currentMetadata = new VideoMetadata(
-					this.state.videoMetadata.snippet.localized.title,
+					request.currentURL,
 					this.state.videoMetadata.snippet.title,
 					this.state.videoMetadata.contentDetails.duration,
 					this.state.videoMetadata.snippet.description,

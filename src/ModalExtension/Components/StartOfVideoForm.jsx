@@ -30,16 +30,15 @@ export default class ChromeClass extends React.Component {
 			return;
 		}
 
-		const Session = new InitialSession(
-			this.props.userId,
-			this.props.videoMetadata.videoTitle,
-			this.props.videoMetadata.url,
-			this.state.purpose,
-			false
-		);
-
-		StoreReview.storeInitialReview(Session);
-		//this.props.getDatabaseRef(databaseEntryKey);
+		const Session = [
+			new InitialSession(
+				this.props.videoMetadata.videoTitle,
+				this.props.videoMetadata.url,
+				this.state.purpose,
+				false
+			)
+		];
+		StoreReview.storeInitialReview({ userId: this.props.userId, session: Session });
 		this.props.onClose();
 		notification.open({
 			message: 'Saved Succesfully',

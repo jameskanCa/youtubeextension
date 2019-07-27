@@ -1,26 +1,4 @@
 function runBackgroundScript() {
-	// const object = { userEmail: 'random test' };
-	// const test = JSON.stringify(object);
-	// let myHeaders = new Headers();
-	// myHeaders.append('Content-Type', 'application/json');
-	// console.log(test);
-	// fetch('http://localhost:3001/test', {
-	// 	method: 'post',
-	// 	headers: {
-	// 		'Content-Type': 'application/json',
-	// 		Accept: '*',
-	// 		'Access-Control-Request-Headers': '*',
-	// 		'Access-Control-Request-Method': '*'
-	// 	},
-	// 	mode: 'cors',
-	// 	body: JSON.stringify(object)
-	// })
-	// 	.then(function(response) {
-	// 		console.log(response);
-	// 	})
-	// 	.catch((e) => {
-	// 		console.log(e);
-	// 	});
 	googleUserProfile();
 	chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
 		chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
