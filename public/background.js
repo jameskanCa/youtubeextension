@@ -1,8 +1,7 @@
 function runBackgroundScript() {
-	googleUserProfile();
+	//googleUserProfile();
 	chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
 		chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-			console.log('this is url' + details.url);
 			if (
 				details.url !== 'https://www.youtube.com' &&
 				details.url.includes('youtube') &&
@@ -13,11 +12,10 @@ function runBackgroundScript() {
 					currentURL: details.url,
 					metadata: await requestVideoMetadata(details.url)
 				});
-
-				chrome.storage.sync.get([ 'userId' ], function(result) {
+				chrome.identity.getProfileUserInfo((user) => {
 					chrome.tabs.sendMessage(details.tabId, {
 						type: 'userProfile',
-						userId: result.userId
+						userId: user.id
 					});
 				});
 			} else {
@@ -36,14 +34,14 @@ function googleUserProfile() {
 			chrome.storage.sync.get([ 'userEmail' ], function(result) {
 				if (result.userEmail == null) {
 					chrome.storage.sync.set({ userEmail: result.userEmail }, function() {
-						console.log('logged');
+						alert('Data saved');
 					});
 				}
 			});
 			chrome.storage.sync.get([ 'userId' ], function(result) {
 				if (result.userId == null) {
 					chrome.storage.sync.set({ userId: user.userId }, function() {
-						console.log('logged');
+						alert('Data saved');
 					});
 				}
 			});
@@ -56,8 +54,13 @@ let extractVideoId = function(url) {
 	if (video_id.indexOf('&') !== null && video_id.indexOf('&') != -1) {
 		return video_id.substring(0, video_id.indexOf('&'));
 	}
+	storeCurrentVideoId(video_id);
 	return video_id;
 };
+
+function storeCurrentVideoId(video_id) {
+	window.localStorage.setItem('youtubeURLVideoId', video_id);
+}
 
 let requestVideoMetadata = async function(url) {
 	const youtubeApiKey = '&key=AIzaSyAashoQOOwdIq9_PeHgmHMvqzyjaxa1sbQ';
@@ -72,3 +75,35 @@ let httpGetAsync = function(requestLink) {
 		return response.json();
 	});
 };
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	if (request.method == 'getCaption') {
+		requestVideoCaption(request.languageType).then((xmlResult) => {
+			sendResponse({ xmlResult: xmlResult });
+		});
+		return true;
+	}
+});
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	if (request.method == 'getLanguageOptions') {
+		requestVideoLanguageOption().then((xmlResult) => {
+			sendResponse({ xmlResult: xmlResult.toString() });
+		});
+		return true;
+	}
+});
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	if (request.method == 'setValue') {
+		window.localStorage.setItem(request.key, request.value);
+	}
+});
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	if (request.method == 'getValue') {
+		let response = localStorage.getItem(request.key);
+		sendResponse({ currentId: response.toString() });
+		return true;
+	}
+});

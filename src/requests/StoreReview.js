@@ -1,22 +1,37 @@
 export class StoreReview {
-	static storeInitialReview(session) {
-		console.log(JSON.stringify(session));
-		fetch('http://localhost:3001/test', {
-			method: 'post',
-			headers: {
-				'Content-Type': 'application/json',
-				Accept: '*',
-				'Access-Control-Request-Headers': '*',
-				'Access-Control-Request-Method': '*'
-			},
-			mode: 'cors',
-			body: JSON.stringify(session)
-		})
-			.then(function(response) {
-				console.log(response);
-			})
-			.catch((e) => {
-				console.log(e);
+	static async storeInitialReview(session) {
+		try {
+			let result = await fetch('http://localhost:3001/storeInitialReview', {
+				method: 'post',
+				headers: {
+					'Content-Type': 'application/json',
+					Accept: '*',
+					'Access-Control-Request-Headers': '*',
+					'Access-Control-Request-Method': '*'
+				},
+				mode: 'cors',
+				body: JSON.stringify(session)
 			});
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	static async storeEndReview(endSession, id) {
+		try {
+			await fetch('http://localhost:3001/storeEndSessionInfo/' + id, {
+				method: 'post',
+				headers: {
+					'Content-Type': 'application/json',
+					Accept: '*',
+					'Access-Control-Request-Headers': '*',
+					'Access-Control-Request-Method': '*'
+				},
+				mode: 'cors',
+				body: JSON.stringify(endSession)
+			});
+		} catch (e) {
+			console.log(e);
+		}
 	}
 }

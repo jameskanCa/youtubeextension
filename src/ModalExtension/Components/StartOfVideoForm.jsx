@@ -1,12 +1,13 @@
 /*global chrome*/
 /* src/content.js */
 import React from 'react';
-import { Form, Input, Button, Collapse, Alert, Divider, notification, Icon } from 'antd';
+import { Form, Input, Button, Collapse, Alert, Divider, notification, Icon, Menu, Dropdown, message } from 'antd';
 import { StoreReview } from '../../requests/StoreReview';
 import '../../content.scss';
 import { YoutubeCategoryMapping } from '../../Utils/YoutubeCategoryMapping';
 import InitialSession from '../../ObjectLibrary/InitialSession';
 import TimeCalculations from '../../Utils/TimeCalculations';
+import YoutubeCaption from '../../requests/YoutubeCaption';
 
 const Panel = Collapse.Panel;
 
@@ -18,27 +19,50 @@ export default class ChromeClass extends React.Component {
 	state = {
 		videoType: '',
 		purpose: '',
-		initialRating: ''
+		initialRating: '',
+		languageOptions: [],
+		selectedLanguage: ''
 	};
 
 	onChange = (value) => {
 		this.setState({ purpose: value });
 	};
 
-	onSave = () => {
+	async componentDidMount() {
+		let options = await YoutubeCaption.requestVideoLanguageOptions();
+		this.setState({ languageOptions: options });
+	}
+
+	extractVideoId(url) {
+		let video_id = url.split('v=')[1];
+		if (video_id.indexOf('&') !== null && video_id.indexOf('&') != -1) {
+			return video_id.substring(0, video_id.indexOf('&'));
+		}
+
+		return video_id;
+	}
+
+	async onSave() {
 		if (this.state.purpose == null || this.state.purpose.length < 25) {
 			return;
 		}
-
 		const Session = [
 			new InitialSession(
+				this.extractVideoId(this.props.videoMetadata.url),
 				this.props.videoMetadata.videoTitle,
-				this.props.videoMetadata.url,
 				this.state.purpose,
 				false
 			)
 		];
-		StoreReview.storeInitialReview({ userId: this.props.userId, session: Session });
+
+		await StoreReview.storeInitialReview({ userId: this.props.userId, session: Session });
+
+		// Get Youtube Caption
+		if (this.state.languageOptions[0] != null) {
+			let captionForVideo = await YoutubeCaption.requestVideoCaption(this.state.selectedLanguage);
+			console.log(captionForVideo);
+		}
+
 		this.props.onClose();
 		notification.open({
 			message: 'Saved Succesfully',
@@ -46,7 +70,7 @@ export default class ChromeClass extends React.Component {
 			icon: <Icon type="smile" style={{ color: '#108ee9' }} />,
 			style: { zIndex: 2147483647, marginTop: 100 }
 		});
-	};
+	}
 
 	warnProcastination() {
 		if (!YoutubeCategoryMapping.isProcastinationVideo(Number(this.props.videoMetadata.videoCategory))) {
@@ -65,6 +89,22 @@ export default class ChromeClass extends React.Component {
 		);
 	}
 
+	onClick = ({ key }) => {
+		message.info(`Click on item ${key}`);
+		console.log(key);
+		this.setState({ selectedLanguage: key });
+	};
+
+	formatLanguageOptions() {
+		return (
+			<Menu onClick={this.onClick}>
+				{this.state.languageOptions.map((language) => {
+					return <Menu.Item key={language.lang_code}>{language.lang_translated}</Menu.Item>;
+				})}
+			</Menu>
+		);
+	}
+
 	render() {
 		return (
 			<div>
@@ -79,7 +119,18 @@ export default class ChromeClass extends React.Component {
 						/>
 					</Form.Item>
 				</Form>
-				<Button onClick={this.onSave}>Log Session</Button>
+				<Dropdown overlay={this.formatLanguageOptions()}>
+					<a className="ant-dropdown-link" href="#">
+						Select Transcript Language <Icon type="down" />
+					</a>
+				</Dropdown>
+				<Button
+					onClick={() => {
+						this.onSave();
+					}}
+				>
+					Log Session
+				</Button>
 				<Divider orientation="left">Video Info</Divider>
 				<Collapse bordered={false}>
 					<Panel header="Description" key="1">

@@ -21,9 +21,18 @@ export default class ChromeClass extends React.Component {
 		this.setState({ notes: value });
 	};
 
-	onSave = () => {
+	extractVideoId(url) {
+		let video_id = url.split('v=')[1];
+		if (video_id.indexOf('&') !== null && video_id.indexOf('&') != -1) {
+			return video_id.substring(0, video_id.indexOf('&'));
+		}
+
+		return video_id;
+	}
+
+	onSave = async () => {
 		const endSession = new EndSession(this.props.userId, true, this.state.notes);
-		StoreReview.storeEndReview(endSession, this.props.databaseKey);
+		StoreReview.storeEndReview(endSession, this.extractVideoId(this.props.videoMetadata.url));
 		this.props.onClose();
 	};
 
@@ -40,7 +49,13 @@ export default class ChromeClass extends React.Component {
 						/>
 					</Form.Item>
 				</Form>
-				<Button onClick={this.onSave}>Log Session</Button>
+				<Button
+					onClick={() => {
+						this.onSave();
+					}}
+				>
+					Log Session
+				</Button>
 			</div>
 		);
 	}

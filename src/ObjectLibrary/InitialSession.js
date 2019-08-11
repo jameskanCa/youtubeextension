@@ -1,15 +1,15 @@
 import TimeCalculations from '../Utils/TimeCalculations';
 
 export default class InitialSession {
+	videoId;
 	videoTitle;
-	videoURL;
 	purposeDescription;
 	startTime;
 	finishedVideo;
 
-	constructor(videoTitle, videoURL, purposeDescription, finishedVideo) {
+	constructor(videoId, videoTitle, purposeDescription, finishedVideo) {
 		this.videoTitle = videoTitle;
-		this.videoURL = videoURL;
+		this.videoId = videoId;
 		this.purposeDescription = purposeDescription;
 		this.startTime = TimeCalculations.obtainCurrentTime();
 		this.finishedVideo = finishedVideo;

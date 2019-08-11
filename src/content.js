@@ -18,13 +18,13 @@ class Main extends React.Component {
 		url: '',
 		videoMetadata: {},
 		endOfVideo: false,
-		dataBaseRef: ''
+		dataBaseRef: '',
+		caption: ''
 	};
 
 	obtainMetadata = (request) => {
 		if (request.type === 'updatedLink') {
 			this.setState({ videoMetadata: request.metadata }, async () => {
-				console.log(request);
 				const currentMetadata = new VideoMetadata(
 					request.currentURL,
 					this.state.videoMetadata.snippet.title,
@@ -85,6 +85,10 @@ class Main extends React.Component {
 		this.setState({ dataBaseRef: reference });
 	};
 
+	storeCaption = (caption) => {
+		this.setState({ caption: caption });
+	};
+
 	handleInitialOk = (e) => {
 		this.setState({
 			visibleModal: false,
@@ -108,7 +112,7 @@ class Main extends React.Component {
 			<Frame
 				head={[
 					<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL('/static/css/content.css')} />,
-					<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL('/static/css/0.chunk.css')} />,
+					<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL('/static/css/3.chunk.css')} />,
 					<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL('/static/css/4.chunk.css')} />
 				]}
 			>
