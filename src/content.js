@@ -6,9 +6,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import StartOfVideoForm from './ModalExtension/Components/StartOfVideoForm';
 import EndOfVideoForm from './ModalExtension/Components/EndOfVideoForm';
-import { Modal } from 'antd';
+import { Modal, Button, notification } from 'antd';
 import VideoMetadata from './ModalExtension/Models/VideoMetadata';
 import './content.scss';
+import NotesModal from './ModalExtension/Components/NotesModal';
 
 class Main extends React.Component {
 	state = {
@@ -17,14 +18,17 @@ class Main extends React.Component {
 		pauseVideo: false,
 		url: '',
 		videoMetadata: {},
+		videoActive: false,
+		showNoteForm: false,
 		endOfVideo: false,
 		dataBaseRef: '',
-		caption: ''
+		caption: '',
+		notification: <div />
 	};
 
 	obtainMetadata = (request) => {
 		if (request.type === 'updatedLink') {
-			this.setState({ videoMetadata: request.metadata }, async () => {
+			this.setState({ videoMetadata: request.metadata, url: request.currentURL }, async () => {
 				const currentMetadata = new VideoMetadata(
 					request.currentURL,
 					this.state.videoMetadata.snippet.title,
@@ -32,6 +36,7 @@ class Main extends React.Component {
 					this.state.videoMetadata.snippet.description,
 					this.state.videoMetadata.snippet.categoryId
 				);
+				notification.close();
 				this.setState({ videoMetadata: currentMetadata, visibleModal: true });
 			});
 		}
@@ -47,15 +52,24 @@ class Main extends React.Component {
 		}
 	};
 
+	setVisibleNoteIconStatus = (request) => {
+		if (request.type === 'removeNoteButton') {
+			this.state.notification.close();
+		}
+	};
+
 	componentDidMount() {
 		chrome.runtime.onMessage.addListener(this.obtainMetadata);
 		chrome.runtime.onMessage.addListener(this.obtainUserProfile);
 		chrome.runtime.onMessage.addListener(this.modalCheck);
+		chrome.runtime.onMessage.addListener(this.setVisibleNoteIconStatus);
 	}
 
 	componentWillUpdate(prevProp, prevState) {
 		if (prevState.url !== this.state.url) {
 			setTimeout(this.pauseVideo, 2000);
+			this.setState({ videoActive: false });
+			notification.close('notesIcon');
 		}
 	}
 
@@ -63,6 +77,8 @@ class Main extends React.Component {
 		chrome.runtime.onMessage.removeListener(this.obtainMetadata);
 		chrome.runtime.onMessage.removeListener(this.obtainUserProfile);
 		chrome.runtime.onMessage.removeListener(this.modalCheck);
+		chrome.runtime.onMessage.removeListener(this.setVisibleNoteIconStatus);
+		notification.close('notesIcon');
 	}
 
 	modalCheck = (request) => {
@@ -92,11 +108,12 @@ class Main extends React.Component {
 	handleInitialOk = (e) => {
 		this.setState({
 			visibleModal: false,
+			videoActive: true,
 			readyToPause: false
 		});
 		document.getElementsByClassName('ytp-play-button ytp-button')[0].click();
 		document.querySelector('video').addEventListener('ended', () => {
-			this.setState({ endOfVideo: true });
+			this.setState({ endOfVideo: true, videoActive: false });
 		});
 	};
 
@@ -105,6 +122,25 @@ class Main extends React.Component {
 			visibleModal: false,
 			endOfVideo: false
 		});
+	};
+
+	openNotification = () => {
+		const args = {
+			placement: 'bottomRight',
+			message: (
+				<Button
+					type="primary"
+					onClick={() => {
+						this.setState({ showNoteForm: true });
+					}}
+				>
+					Notes
+				</Button>
+			),
+			duration: 0,
+			key: 'notesIcon'
+		};
+		notification.open(args);
 	};
 
 	render() {
@@ -139,6 +175,8 @@ class Main extends React.Component {
 										/>
 									</Modal>
 								)}
+								{this.state.videoActive ? this.openNotification() : <React.Fragment />}
+								{this.state.showNoteForm && <NotesModal />}
 								{this.state.endOfVideo && (
 									<Modal
 										title="Youtube Noter"

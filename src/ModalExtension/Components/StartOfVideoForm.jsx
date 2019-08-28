@@ -91,7 +91,6 @@ export default class ChromeClass extends React.Component {
 
 	onClick = ({ key }) => {
 		message.info(`Click on item ${key}`);
-		console.log(key);
 		this.setState({ selectedLanguage: key });
 	};
 
@@ -120,7 +119,7 @@ export default class ChromeClass extends React.Component {
 					</Form.Item>
 				</Form>
 				<Dropdown overlay={this.formatLanguageOptions()}>
-					<a className="ant-dropdown-link" href="#">
+					<a className="ant-dropdown-link">
 						Select Transcript Language <Icon type="down" />
 					</a>
 				</Dropdown>

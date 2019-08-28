@@ -12,6 +12,10 @@ function runBackgroundScript() {
 					currentURL: details.url,
 					metadata: await requestVideoMetadata(details.url)
 				});
+				chrome.tabs.sendMessage(details.tabId, {
+					type: 'removeNoteButton',
+					visible: false
+				});
 				chrome.identity.getProfileUserInfo((user) => {
 					chrome.tabs.sendMessage(details.tabId, {
 						type: 'userProfile',
