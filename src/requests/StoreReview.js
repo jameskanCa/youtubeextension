@@ -1,7 +1,8 @@
 export class StoreReview {
 	static async storeInitialReview(session) {
+		console.log(session);
 		try {
-			let result = await fetch('http://localhost:3001/storeInitialReview', {
+			await fetch('http://localhost:3001/storeInitialReview', {
 				method: 'post',
 				headers: {
 					'Content-Type': 'application/json',

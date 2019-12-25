@@ -51,7 +51,8 @@ export default class ChromeClass extends React.Component {
 				this.extractVideoId(this.props.videoMetadata.url),
 				this.props.videoMetadata.videoTitle,
 				this.state.purpose,
-				false
+				false,
+				this.props.videoMetadata
 			)
 		];
 
