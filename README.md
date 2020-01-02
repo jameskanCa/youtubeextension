@@ -1,68 +1,32 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# YoutTube Focus Reminder
+This Web-App is the client-facing component of the project "Youtube Focus Reminder". 
 
-## Available Scripts
+### Component-1 (Server): https://github.com/jameskanCa/Youtube-Server
 
-In the project directory, you can run:
+### Component-2 (Chrome Extension): You're viewing Chrome Extension component.
 
-### `npm start`
+### Component-3 (Web App): https://github.com/jameskanCa/youtubeappwebpage
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Project Description: 
+The purpose of this project is to turn YouTube into a useful tool instead of becoming a mode of distraction. Also, it is to provide insight into each individual's video-watching habit.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## Project Architecture:
+Client extension and client web-app communicate with the server API endpoints to store and retrieve data. User information is stored according to their Google ID in the MongoDB database. Client extension operates only when a user is viewing videos on YouTube, collecting video metadata as well as information user inputs when the modal pops up to indicate a video may be of distracting nature. 
 
-### `npm test`
+Web-App communicates through REST calls to the server API to retrieve user data, including watch history and video metadata. This data gets used to calculate metrics such as % of videos watched that are distracting and non-educational. A breakdown of the user's video categories per day can be displayed. 
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# Project Images
+### Client Extension Modal that warns users a video is of distracting nature.
+![](Images/p1.PNG)
 
-### `npm run build`
+### Example of watch history table collected from users. (Category Green = Non-distracting. Red = Distracting)
+![](Images/p2.PNG)
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Example of detailed metadata shown of a vidoe watched by users.
+![](Images/p3.PNG)
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+### Example of graphical metric data.
+![](Images/p6.PNG)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+### Example of user daily video category breakdown. 
+![](Images/p7.PNG)
