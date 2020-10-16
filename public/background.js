@@ -67,7 +67,7 @@ function storeCurrentVideoId(video_id) {
 }
 
 let requestVideoMetadata = async function(url) {
-  const youtubeApiKey = `&key=${process.env.YOUTUBE_API}`;
+  const youtubeApiKey = `&key=-E`;
   const youtubeApiBaseLink =
     "https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=";
   const requestLink = youtubeApiBaseLink + extractVideoId(url) + youtubeApiKey;
